@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\gymEquipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Session;
+use App\Models\gymEquipments;
 
 class AuthController extends Controller
 {
@@ -68,6 +68,7 @@ class AuthController extends Controller
     {
         if(Auth::check())
         {
+            $equipments
             return view('dashboard', ['test' => "hahahha"]);
         }
         return redirect('login')->withSuccess("Login to Access");
@@ -80,8 +81,8 @@ class AuthController extends Controller
 
     public function storeProduct(Request $request)
     {
-        // $file_name = time(). '.'. request()->image->getClientOriginalExtension();
-        // request()->image->move(public_path('images'). $file_name);
+        $file_name = time(). '.'. request()->image->getClientOriginalExtension();
+        request()->image->move(public_path('images'). $file_name);
 
         $equipments = new gymEquipments;
         $equipments->name = $request->name;
@@ -90,7 +91,7 @@ class AuthController extends Controller
         $equipments->image = $file_name;
         
 
-        $equipments->save();
+        $equipments-> save();
         return redirect()->route('dashboard')->with('success', 'Product Added Successfully');
 
     }
