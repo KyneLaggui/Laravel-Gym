@@ -2,10 +2,11 @@
 @section('content')
     <main class="container">
         <section>
-            <form method="post" action="{{ route('storeProducts.post')}}" enctype="multipart/form-data">
+            <form method="PUT" action="{{ route('updateEquipments.put', $equipmentsEdit->id)}}" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
                 <div class="titlebar">
-                    <h1>Add Product</h1>
+                    <h1>Edit Product</h1>
                     <button>Save</button>
                 </div>
                 @if ($errors->any)
@@ -20,18 +21,19 @@
                 <div class="card">
                 <div>
                         <label>Name</label>
-                        <input type="text" name="name" >
+                        <input type="text" name="name" value="{{ $equipmentsEdit->name }}">
                         <label>Description (optional)</label>
-                        <textarea cols="10" rows="5" name="description" ></textarea>
+                        <textarea cols="10" rows="5" name="description" value="{{ $equipmentsEdit->description }}">{{ $equipmentsEdit->description }}</textarea>
                         <label>Add Image</label>
-                        <img src="" alt="" class="img-product" id="file-preview"/>
+                        <img src="{{ asset('imagesEquipments/'.$equipmentsEdit->image) }}" alt="" class="img-product" id="file-preview"/>
+                        <input type="hidden" name="hidden_product_image" value= {{ $equipmentsEdit->image }} />
                         <input type="file" name= "image" accept="image/*" onchange="showFile(event)">
                     </div>
                 <div>
                         <label>Category</label> 
                         <select  name="category" >
                             @foreach(json_decode('{"Legs":"Legs", "Chest":"Chest", "Arms": "Arms", "Back": "Back"}', true) as $optionKey => $optionValue)
-                                <option value="{{ $optionKey }}" >{{ $optionValue}}</option>
+                                <option value="{{ $optionKey }}" {{ (isset($equipmentsEdit->category) && $equipmentsEdit->category == $optionKey) ? 'selected': '' }}>{{ $optionValue}}</option>
                             @endforeach
                             
                         </select>
@@ -41,7 +43,8 @@
                 </div>
                 <div class="titlebar">
                     <h1></h1>
-                    <button>Save</button>
+                    <input type="hidden" name="hidden_id" value="{{ $equipmentsEdit->id }}" />
+                    
                 </div>
             </form>
         </section>

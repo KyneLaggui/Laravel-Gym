@@ -64,12 +64,23 @@ class AuthController extends Controller
         return redirect('login');
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         if(Auth::check())
         {
-            $equipments
-            return view('dashboard', ['test' => "hahahha"]);
+            $keyword = $request->get('search');
+            $perPage = 5;
+
+            if (!empty($keyword)) {
+                $equipments = gymEquipments::where('name', 'LIKE', "%$keyword%")
+                    ->orWhere('category', 'LIKE', "%$keyword%")
+                    ->latest()
+                    ->paginate($perPage);
+            } else {
+                $equipments = gymEquipments::latest()->paginate($perPage);
+            }
+
+            return view('dashboard', ['equipments' => $equipments])->with('i', (request()->input('page', 1) - 1) * $perPage);
         }
         return redirect('login')->withSuccess("Login to Access");
     }
@@ -81,10 +92,16 @@ class AuthController extends Controller
 
     public function storeProduct(Request $request)
     {
-        $file_name = time(). '.'. request()->image->getClientOriginalExtension();
-        request()->image->move(public_path('images'). $file_name);
+        $request->validate([
+            'name'=> 'required',
+            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2028'
+        ]);
 
         $equipments = new gymEquipments;
+
+        $file_name = time() . '.'. request()->image->getClientOriginalExtension();
+        request()->image->move(public_path('imagesEquipments'), $file_name);
+
         $equipments->name = $request->name;
         $equipments->description = $request->description;
         $equipments-> category = $request->category;
@@ -92,7 +109,54 @@ class AuthController extends Controller
         
 
         $equipments-> save();
-        return redirect()->route('dashboard')->with('success', 'Product Added Successfully');
+        return redirect()->route('dashboard')->with('success', 'Equipment Added Successfully');
+
+    }
+
+    public function edit($id) 
+    {
+        $equipmentsEdit = gymEquipments::findOrFail($id);
+        return view('editEquipments', ["equipmentsEdit" => $equipmentsEdit]);
+    }
+
+    public function update(Request $request, gymEquipments $equipmentsEdit)
+    {
+
+        $request->validate([
+            'name' => 'required'
+        ]);
+
+        $file_name = $request-> hidden_equipments_image;
+
+        if($request->image !='')
+        {
+            $file_name = time() . '.'. request()->image->getClientOriginalExtension();
+            request()->image->move(public_path('imagesEquipments'), $file_name);
+        }
+
+        $equipmentsEdit = gymEquipments::find($request->hidden_id);
+
+        $equipmentsEdit->name = $request->name;
+        $equipmentsEdit->description = $request->description;
+        $equipmentsEdit-> category = $request->category;
+        $equipmentsEdit->image = $file_name;
+
+        $equipmentsEdit-> save();
+        return redirect()->route('dashboard')->with('success', 'Equipments has been Updated');
+
+    }
+
+    public function delete($id)
+    {
+        $equipments = gymEquipments::findOrFail($id);
+        $image_path = public_path()."/images/";
+        $image =  $image_path. $equipments->image;
+        if (file_exists($image))
+        {
+           @unlink($image); 
+        }
+        $equipments->delete();
+        return redirect()->route('dashboard')->with('success', 'Equipments has been Deleted');
 
     }
 }
