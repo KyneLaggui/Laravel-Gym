@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\GymEquipmentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +16,7 @@ use App\Http\Controllers\Auth\AuthController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('view');
 });
 
 //Yung name is yung name ng tatawagin, yung katabi nung class ayun yung tatawagin sa function sa controller tapos yung una yung sa routing 
@@ -25,5 +26,8 @@ Route::get('login', [AuthController::class, 'index'])-> name('login');
 Route::get('registration', [AuthController::class, 'registration'])-> name('registration');
 Route::post('post-registration', [AuthController::class, 'postRegistration'])-> name('registration.post');
 Route::post('post-login', [AuthController::class, 'postLogin'])-> name('login.post');
+Route::post('post-products', [AuthController::class, 'storeProduct'])-> name('storeProducts.post');
 Route::get('dashboard', [AuthController::class, 'dashboard'])-> name('dashboard');
 Route::get('logout', [AuthController::class, 'logout'])-> name('logout');
+Route::get('createProduct', [AuthController::class, 'createProduct'])-> name('createProduct');
+

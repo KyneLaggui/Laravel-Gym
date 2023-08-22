@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\gymEquipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -65,9 +66,32 @@ class AuthController extends Controller
 
     public function dashboard()
     {
-        if(Auth::check()){
-            return view('dashboard');
+        if(Auth::check())
+        {
+            return view('dashboard', ['test' => "hahahha"]);
         }
         return redirect('login')->withSuccess("Login to Access");
+    }
+    
+    public function createProduct()
+    {
+        return view('createProduct');
+    }   
+
+    public function storeProduct(Request $request)
+    {
+        // $file_name = time(). '.'. request()->image->getClientOriginalExtension();
+        // request()->image->move(public_path('images'). $file_name);
+
+        $equipments = new gymEquipments;
+        $equipments->name = $request->name;
+        $equipments->description = $request->description;
+        $equipments-> category = $request->category;
+        $equipments->image = $file_name;
+        
+
+        $equipments->save();
+        return redirect()->route('dashboard')->with('success', 'Product Added Successfully');
+
     }
 }
