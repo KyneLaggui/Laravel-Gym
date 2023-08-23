@@ -34,6 +34,6 @@ Route::get('/equipments/edit/{id}', [AuthController::class, 'edit'])->name('edit
 Route::get('put-equipments/{id}', [AuthController::class, 'update'])->name('updateEquipments.put');
 Route::delete('delete-equipments/{id}', [AuthController::class, 'delete'])->name('deleteEquipments');
 Route::get('usersList', [AuthController::class, 'listUser'])-> name('usersList');
-Route::get('usersEdit', [AuthController::class, 'editUser'])-> name('usersEdit');
 Route::patch('/users/{id}/update-level', [AuthController::class, 'updateUserLevel'])->name('updateUserLevel');
+Route::delete('delete-users/{id}', [AuthController::class, 'deleteUser'])->name('deleteUser');
 

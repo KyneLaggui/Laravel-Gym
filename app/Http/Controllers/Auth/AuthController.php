@@ -151,11 +151,13 @@ class AuthController extends Controller
     {
         if (Auth::check() && Auth::user()->level === 10) {
 
-            $users = User::all(); 
+            // $users = User::all(); 
+            $users = User::where('level', '!=', 10)->get();
+
             return view('admin.users', ['users' => $users]);
         } else {
 
-            return redirect('login')->withErrors("Not an Admin");
+            return redirect('login')->withErrors("Admin only allowed");
         }
     }
 
@@ -174,5 +176,12 @@ class AuthController extends Controller
         $user->save();
 
         return redirect()->route('usersList')->with('success', 'User level updated successfully.');
+    }
+    public function deleteUser($id)
+    {
+        $equipments = User::findOrFail($id);
+        $equipments->delete();
+        return redirect()->route('dashboard')->with('success', 'Equipments has been Deleted');
+
     }
 }
