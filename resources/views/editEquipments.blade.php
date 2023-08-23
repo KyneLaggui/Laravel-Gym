@@ -26,7 +26,7 @@
                         <textarea cols="10" rows="5" name="description" value="{{ $equipmentsEdit->description }}">{{ $equipmentsEdit->description }}</textarea>
                         <label>Add Image</label>
                         <img src="{{ asset('imagesEquipments/'.$equipmentsEdit->image) }}" alt="" class="img-product" id="file-preview"/>
-                        <input type="hidden" name="hidden_product_image" value= {{ $equipmentsEdit->image }} />
+                        <input type="hidden" name="hidden_equipments_image" value= {{ $equipmentsEdit->image }} />
                         <input type="file" name= "image" accept="image/*" onchange="showFile(event)">
                     </div>
                 <div>
