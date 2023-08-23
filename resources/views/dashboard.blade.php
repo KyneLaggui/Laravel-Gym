@@ -2,8 +2,10 @@
 @section('content')
 <div class="titlebar">
     <h1>Equipments</h1>       
-    <button type="button" class="btn btn-outline-primary btn-rounded" data-mdb-toggle="modal" data-mdb-target="#exampleModal"
-    data-mdb-ripple-color="dark">Add Product</button>
+    @if (Auth::user()->level == 1 || Auth::user()->level == 10)
+        <button type="button" class="btn btn-outline-primary btn-rounded" data-mdb-toggle="modal" data-mdb-target="#exampleModal"
+        data-mdb-ripple-color="dark">Add Product</button>
+    @endif
 
 </div>
 @if ($message = Session::get('success'))
@@ -47,15 +49,20 @@
                     <td>{{$equipments[$index]->description}}</td>
                     <td>
                     <div class="d-flex flex-row justify-content-flex-start">
-                        <a href="{{ route('editEquipments', [$equipments[$index]->id]) }}">
-                            <button class="btn btn-success m-1">Edit</button>
-                        </a>
-                        <form method='post' action="{{ route('deleteEquipments', [$equipments[$index]->id]) }}">
-                            <button class="btn btn-danger m-1" onclick="deleteConfirm(event)" > Delete
-                                @method('delete')
-                                @csrf
-                            </button>
-                        </form>
+                        @if (Auth::user()->level == 1 || Auth::user()->level == 2 || Auth::user()->level == 10)
+                                    <a href="{{ route('editEquipments', [$equipments[$index]->id]) }}">
+                                        <button class="btn btn-success m-1">Edit</button>
+                                    </a>
+                        @endif
+                        @if (Auth::user()->level == 1 || Auth::user()->level == 10)
+                            <form method='post' action="{{ route('deleteEquipments', [$equipments[$index]->id]) }}">
+                                <button class="btn btn-danger m-1" onclick="deleteConfirm(event)">Delete
+                                    @method('delete')
+                                    @csrf
+                                </button>
+                            </form>
+                        @endif
+                        
                         
                     </div>
                    

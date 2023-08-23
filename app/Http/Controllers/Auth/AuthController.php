@@ -9,6 +9,7 @@ use App\Models\User;
 use Session;
 use App\Models\gymEquipments;
 
+
 class AuthController extends Controller
 {
     public function index()
@@ -144,5 +145,34 @@ class AuthController extends Controller
         $equipments->delete();
         return redirect()->route('dashboard')->with('success', 'Equipments has been Deleted');
 
+    }
+
+    public function listUser()
+    {
+        if (Auth::check() && Auth::user()->level === 10) {
+
+            $users = User::all(); 
+            return view('admin.users', ['users' => $users]);
+        } else {
+
+            return redirect('login')->withErrors("Not an Admin");
+        }
+    }
+
+    public function updateUserLevel(Request $request, $id)
+    {
+        
+        $request->validate([
+            'level' => 'required|in:1,2,3', 
+        ]);
+
+        
+        $user = User::findOrFail($id);
+
+        
+        $user->level = $request->level;
+        $user->save();
+
+        return redirect()->route('usersList')->with('success', 'User level updated successfully.');
     }
 }

@@ -17,7 +17,9 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white ">
         <div class="container-fluid">
-            <span class="navbar-brand">Kaydev</span>
+            <span class="navbar-brand" >
+                <a class="nav-link" href="{{ url('dashboard') }}">Kaydev</a>
+            </span>
         <button
             class="navbar-toggler"
             type="button"
@@ -39,6 +41,11 @@
                     <a class="nav-link" href="{{ url('registration') }}">Signup</a>
                 </li>
             @else
+                @if (Auth::check() && Auth::user()->level === 10)
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('usersList') }}">Users</a>
+                </li>
+                @endif
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('logout') }}">Logout</a>
                 </li>
