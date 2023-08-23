@@ -94,18 +94,15 @@ class AuthController extends Controller
     {
         $request->validate([
             'name'=> 'required',
-            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2028'
+            
         ]);
 
         $equipments = new gymEquipments;
 
-        $file_name = time() . '.'. request()->image->getClientOriginalExtension();
-        request()->image->move(public_path('imagesEquipments'), $file_name);
-
         $equipments->name = $request->name;
         $equipments->description = $request->description;
         $equipments-> category = $request->category;
-        $equipments->image = $file_name;
+        
         
 
         $equipments-> save();
@@ -126,20 +123,15 @@ class AuthController extends Controller
             'name' => 'required'
         ]);
 
-        $file_name = $request-> hidden_equipments_image;
+    
 
-        if($request->image !='')
-        {
-            $file_name = time() . '.'. request()->image->getClientOriginalExtension();
-            request()->image->move(public_path('imagesEquipments'), $file_name);
-        }
 
         $equipmentsEdit = gymEquipments::find($request->hidden_id);
 
         $equipmentsEdit->name = $request->name;
         $equipmentsEdit->description = $request->description;
         $equipmentsEdit-> category = $request->category;
-        $equipmentsEdit->image = $file_name;
+       
 
         $equipmentsEdit-> save();
         return redirect()->route('dashboard')->with('success', 'Equipments has been Updated');
@@ -149,12 +141,6 @@ class AuthController extends Controller
     public function delete($id)
     {
         $equipments = gymEquipments::findOrFail($id);
-        $image_path = public_path()."/images/";
-        $image =  $image_path. $equipments->image;
-        if (file_exists($image))
-        {
-           @unlink($image); 
-        }
         $equipments->delete();
         return redirect()->route('dashboard')->with('success', 'Equipments has been Deleted');
 

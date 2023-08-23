@@ -16,7 +16,9 @@
 <table class="table align-middle mb-0 bg-white">
     
     <thead class="bg-light">
+   
       <tr>
+        <th>#</th>
         <th>Name</th>
         <th>Category</th>
         <th>Description</th>
@@ -26,39 +28,37 @@
     <tbody>
         @if (count($equipments) > 0)
             
-            @foreach ($equipments as $equipments)
+            @foreach ($equipments as $index => $equipment)
+            
                 <tr>
+                    <td>{{ $index + 1 }}</td>
                     <td>
                     <div class="d-flex align-items-center">
-                        
-                        <img
-                            src="{{ asset('imagesEquipments/' . $equipments->image )}}"
-                            alt=""
-                            style="width: 45px; height: 45px"
-                            class="rounded-circle"
-                            />
                         <div class="ms-3">
-                        <p class="fw-bold mb-1">{{$equipments->name}}</p>
+                        <p class="fw-bold mb-1">{{$equipments[$index]->name}}</p>
                     
                         </div>
                     </div>
                     </td>
                     <td>
-                    <p class="fw-normal mb-1">{{$equipments->category}}</p>
+                    <p class="fw-normal mb-1">{{$equipments[$index]->category}}</p>
                     
                     </td>
-                    <td>{{$equipments->description}}</td>
+                    <td>{{$equipments[$index]->description}}</td>
                     <td>
-                    <a href="{{ route('editEquipments', [$equipments->id]) }}">
-                        <i class="fas fa-pencil-alt" ></i> 
-                    </a>
-                    <form method='post' action="{{ route('deleteEquipments', [$equipments->id]) }}">
-                        <button class="btn-danger button" onclick="submit" >
-                            @method('delete')
-                            @csrf
-                            <i class="far fa-trash-alt"></i>
-                        </button>
-                    </form>
+                    <div class="d-flex flex-row justify-content-flex-start">
+                        <a href="{{ route('editEquipments', [$equipments[$index]->id]) }}">
+                            <button class="btn btn-success m-1">Edit</button>
+                        </a>
+                        <form method='post' action="{{ route('deleteEquipments', [$equipments[$index]->id]) }}">
+                            <button class="btn btn-danger m-1" onclick="deleteConfirm(event)" > Delete
+                                @method('delete')
+                                @csrf
+                            </button>
+                        </form>
+                        
+                    </div>
+                   
                     </td>
                 </tr>
             @endforeach   
@@ -97,9 +97,6 @@
                         <textarea class="form-control" id="textAreaExample" rows="4" name="description"></textarea>
                         <label class="form-label" for="textAreaExample" >Description</label>
                     </div>
-                    <label class="form-label" for="customFile">Add Image</label>
-                    <img src="" alt="" class="img-product" id="file-preview"/>
-                    <input type="file" class="form-control mb-3" id="customFile" name= "image" accept="image/*"/>
                     <select class="browser-default custom-select w-100 p-1 " name="category">
                         @foreach(json_decode('{"Legs":"Legs", "Chest":"Chest", "Arms": "Arms", "Back": "Back"}', true) as $optionKey => $optionValue)
                                 <option value="{{ $optionKey }}" >{{ $optionValue}}</option>
@@ -201,7 +198,41 @@
     {
         e.preventDefault();
         var form = e.target.form;
-        //Lagyan pop up
+        const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+        }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+            swalWithBootstrapButtons.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+            )
+        } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+        ) {
+            swalWithBootstrapButtons.fire(
+            'Cancelled',
+            'Your imaginary file is safe :)',
+            'error'
+            )
+        }
+        })
     }
 
     function showFile(event){

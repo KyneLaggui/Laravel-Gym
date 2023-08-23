@@ -23,9 +23,7 @@
                         <input type="text" name="name" >
                         <label>Description (optional)</label>
                         <textarea cols="10" rows="5" name="description" ></textarea>
-                        <label>Add Image</label>
-                        <img src="" alt="" class="img-product" id="file-preview"/>
-                        <input type="file" name= "image" accept="image/*" onchange="showFile(event)">
+                        
                 </div>
                 <div>
                         <label>Category</label> 
