@@ -1,81 +1,105 @@
 @extends('layout')
 @section('content')
-<div class="titlebar">
-    <h1>Equipments</h1>       
-    @if (Auth::user()->level == 1 || Auth::user()->level == 10)
-        <button type="button" class="btn btn-outline-primary btn-rounded" data-mdb-toggle="modal" data-mdb-target="#exampleModal"
-        data-mdb-ripple-color="dark">Add Product</button>
-    @endif
 
-</div>
-@if ($message = Session::get('success'))
-    <div>
+<div class="titlebar ">
+    <div class="d-flex justify-content-around align-items-center mb-3  mt-3">
+        <div>
+            <h1>Equipments</h1>
+        </div>
+        <div>
+            @if (Auth::user()->level == 1 || Auth::user()->level == 10)
+                <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#exampleModal"
+                data-mdb-ripple-color="dark">Add Product</button>
+            @endif
+        </div>
+        
+    </div>
+    <form method="GET" action="{{ route('dashboard') }}" accept-charset="UTF-8" role="search" class="d-flex justify-content-center">
+        <div class="input-group w-50 p-3 ">
+            <div class="form-outline">
+              <input id="search-input" type="search" id="form1" class="form-control name="search"  name="search" value="{{ request('search') }}"/>
+              <label class="form-label" for="form1">Search</label>
+            </div>
+            <button id="search-button"  class="btn btn-primary search-select">
+              <i class="fas fa-search"></i>
+            </button>
+            
+        </div>
+          
+    </form>
+    @if ($message = Session::get('success'))
+    <div class="d-flex justify-content-center">
         <ul>
             <li>{{ $message }}</li>
         </ul>
-    </div>
-@endif
-<table class="table align-middle mb-0 bg-white">
+        </div>
+    @endif
+
+</div>
+
+<div class="d-flex justify-content-center">
+    <table class="table align-middle mb-0 bg-white w-75 p-3  ">
+        
+        <thead class="bg-primary">
     
-    <thead class="bg-light">
-   
-      <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Description</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-        @if (count($equipments) > 0)
-            
-            @foreach ($equipments as $index => $equipment)
-            
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>
-                    <div class="d-flex align-items-center">
-                        <div class="ms-3">
-                        <p class="fw-bold mb-1">{{$equipments[$index]->name}}</p>
-                    
+            <tr>
+                <th class=" text-white">#</th>
+                <th class=" text-white">Name</th>
+                <th class=" text-white">Category</th>
+                <th class=" text-white">Description</th>
+                <th class=" text-white">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (count($equipments) > 0)
+                
+                @foreach ($equipments as $index => $equipment)
+                
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>
+                        <div class="d-flex align-items-center">
+                            <div class="ms-3">
+                            <p class="fw-bold mb-1">{{$equipments[$index]->name}}</p>
+                        
+                            </div>
                         </div>
-                    </div>
-                    </td>
-                    <td>
-                    <p class="fw-normal mb-1">{{$equipments[$index]->category}}</p>
+                        </td>
+                        <td>
+                        <p class="fw-normal mb-1">{{$equipments[$index]->category}}</p>
+                        
+                        </td>
+                        <td>{{$equipments[$index]->description}}</td>
+                        <td>
+                        <div class="d-flex flex-row justify-content-flex-start">
+                            @if (Auth::user()->level == 1 || Auth::user()->level == 2 || Auth::user()->level == 10)
+                                        <a href="{{ route('editEquipments', [$equipments[$index]->id]) }}">
+                                            <button class="btn btn-success m-1">Edit</button>
+                                        </a>
+                            @endif
+                            @if (Auth::user()->level == 1 || Auth::user()->level == 10)
+                                <form method='post' action="{{ route('deleteEquipments', [$equipments[$index]->id]) }}">
+                                    <button class="btn btn-danger m-1" onclick="deleteConfirm(event)">Delete
+                                        @method('delete')
+                                        @csrf
+                                    </button>
+                                </form>
+                            @endif
+                            
+                            
+                        </div>
                     
-                    </td>
-                    <td>{{$equipments[$index]->description}}</td>
-                    <td>
-                    <div class="d-flex flex-row justify-content-flex-start">
-                        @if (Auth::user()->level == 1 || Auth::user()->level == 2 || Auth::user()->level == 10)
-                                    <a href="{{ route('editEquipments', [$equipments[$index]->id]) }}">
-                                        <button class="btn btn-success m-1">Edit</button>
-                                    </a>
-                        @endif
-                        @if (Auth::user()->level == 1 || Auth::user()->level == 10)
-                            <form method='post' action="{{ route('deleteEquipments', [$equipments[$index]->id]) }}">
-                                <button class="btn btn-danger m-1" onclick="deleteConfirm(event)">Delete
-                                    @method('delete')
-                                    @csrf
-                                </button>
-                            </form>
-                        @endif
-                        
-                        
-                    </div>
-                   
-                    </td>
-                </tr>
-            @endforeach   
-            
-        @else
-            <p>No Equipments found.</p>
-        @endif
-      
-    </tbody>
-  </table>
+                        </td>
+                    </tr>
+                @endforeach   
+                
+            @else
+                <p>No Equipments found.</p>
+            @endif
+        
+        </tbody>
+    </table>
+</div>
   <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -121,6 +145,8 @@
       </div>
     </div>
   </div>
+  
+   
 {{-- Old Table --}}
 {{-- <main class="container">
     <section>
@@ -200,6 +226,7 @@
         </div>
     </section>--}}
 {{-- </main>  --}}
+
 <script>
     window.deleteConfirm = function (e)
     {
@@ -235,7 +262,7 @@
         ) {
             swalWithBootstrapButtons.fire(
             'Cancelled',
-            'Your imaginary file is safe :)',
+            'Your Equipments are safe',
             'error'
             )
         }
@@ -253,6 +280,11 @@
 
             };
             reader.readAsDataURL(input.files[0]);
+    }
+    function openEditModal(id) {
+        const modal = document.getElementById(`editModal${id}`);
+        const mdbModal = new mdb.Modal(modal);
+        mdbModal.show();
     }
 </script>
 @endsection

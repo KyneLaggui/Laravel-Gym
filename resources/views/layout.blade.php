@@ -42,9 +42,13 @@
                 </li>
             @else
                 @if (Auth::check() && Auth::user()->level === 10)
+                
+                <a class="nav-link">Hello, {{ auth()->user()->name}}</a>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('usersList') }}">Users</a>
                 </li>
+                
                 @endif
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('logout') }}">Logout</a>

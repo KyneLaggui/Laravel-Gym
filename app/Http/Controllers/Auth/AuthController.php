@@ -147,13 +147,22 @@ class AuthController extends Controller
 
     }
 
-    public function listUser()
+    public function listUser(Request $request)
     {
         if (Auth::check() && Auth::user()->level === 10) {
 
             // $users = User::all(); 
             $users = User::where('level', '!=', 10)->get();
-
+            $keyword = $request->get('searchUser');
+            $perPage = 5;
+            if (!empty($keyword)) {
+                $equipments = User::where('name', 'LIKE', "%$keyword%")
+                    ->orWhere('email', 'LIKE', "%$keyword%")
+                    ->latest()
+                    ->paginate($perPage); // Add paginate method
+            } else {
+                // ... existing code ...
+            }
             return view('admin.users', ['users' => $users]);
         } else {
 
