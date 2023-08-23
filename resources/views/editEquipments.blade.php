@@ -39,7 +39,10 @@
                         
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary m-2" data-mdb-dismiss="modal">Close</button>
+                        <a href="{{ url('dashboard') }}">
+                            <button type="button" class="btn btn-secondary m-2" data-mdb-dismiss="modal">Close</button>
+                        </a>
+                        
                         <input type="hidden" name="hidden_id" value="{{ $equipmentsEdit->id }}" />
                         <button class="btn btn-primary ">Save changes</button>
                     </div>

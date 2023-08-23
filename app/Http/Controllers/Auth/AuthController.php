@@ -70,20 +70,19 @@ class AuthController extends Controller
         if(Auth::check())
         {
             $keyword = $request->get('search');
-            $perPage = 5;
 
             if (!empty($keyword)) {
                 $equipments = gymEquipments::where('name', 'LIKE', "%$keyword%")
                     ->orWhere('category', 'LIKE', "%$keyword%")
                     ->latest()
-                    ->paginate($perPage);
+                    ->get();
             } else {
-                $equipments = gymEquipments::latest()->paginate($perPage);
+                $equipments = gymEquipments::latest()->get();
             }
 
-            return view('dashboard', ['equipments' => $equipments])->with('i', (request()->input('page', 1) - 1) * $perPage);
+            return view('dashboard', ['equipments' => $equipments]);
         }
-        return redirect('login')->withSuccess("Login to Access");
+        return redirect('login')->withErrors("Login to Access");
     }
     
     public function createProduct()
@@ -154,14 +153,15 @@ class AuthController extends Controller
             // $users = User::all(); 
             $users = User::where('level', '!=', 10)->get();
             $keyword = $request->get('searchUser');
-            $perPage = 5;
+            
             if (!empty($keyword)) {
-                $equipments = User::where('name', 'LIKE', "%$keyword%")
+                $users = User::where('name', 'LIKE', "%$keyword%")
                     ->orWhere('email', 'LIKE', "%$keyword%")
+                    ->orWhere('level', 'LIKE', "%$keyword%")
                     ->latest()
-                    ->paginate($perPage); // Add paginate method
+                    ->get(); 
             } else {
-                // ... existing code ...
+                
             }
             return view('admin.users', ['users' => $users]);
         } else {

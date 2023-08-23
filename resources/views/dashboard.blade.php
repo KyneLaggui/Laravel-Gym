@@ -27,16 +27,41 @@
         </div>
           
     </form>
-    @if ($message = Session::get('success'))
-    <div class="d-flex justify-content-center">
-        <ul>
-            <li>{{ $message }}</li>
-        </ul>
+    <div class="d-flex justify-content-around align-items-center mb-3  mt-3">
+        @if (Auth::user()->level != 10)  
+        <div>
+            <h3>You are User {{ auth()->user()->level }}</h1>
         </div>
-    @endif
+        @else
+        <div>
+            <h3>You are the Head Admin</h1>
+        </div>
+        @endif
+    </div>
+   
 
 </div>
+@if ($message = Session::get('success'))
 
+<script type="text/javascript">
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+        })
+
+        Toast.fire({
+        icon: 'success',
+        title: '{{ $message }}'
+    })
+</script>
+@endif
 <div class="d-flex justify-content-center">
     <table class="table align-middle mb-0 bg-white w-75 p-3  ">
         
@@ -47,7 +72,9 @@
                 <th class=" text-white">Name</th>
                 <th class=" text-white">Category</th>
                 <th class=" text-white">Description</th>
-                <th class=" text-white">Actions</th>
+                @if (Auth::user()->level == 1 || Auth::user()->level == 2 || Auth::user()->level == 10)
+                    <th class=" text-white">Actions</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -70,26 +97,28 @@
                         
                         </td>
                         <td>{{$equipments[$index]->description}}</td>
-                        <td>
-                        <div class="d-flex flex-row justify-content-flex-start">
-                            @if (Auth::user()->level == 1 || Auth::user()->level == 2 || Auth::user()->level == 10)
-                                        <a href="{{ route('editEquipments', [$equipments[$index]->id]) }}">
-                                            <button class="btn btn-success m-1">Edit</button>
-                                        </a>
-                            @endif
-                            @if (Auth::user()->level == 1 || Auth::user()->level == 10)
-                                <form method='post' action="{{ route('deleteEquipments', [$equipments[$index]->id]) }}">
-                                    <button class="btn btn-danger m-1" onclick="deleteConfirm(event)">Delete
-                                        @method('delete')
-                                        @csrf
-                                    </button>
-                                </form>
-                            @endif
-                            
-                            
-                        </div>
-                    
-                        </td>
+                        @if (Auth::user()->level == 1 || Auth::user()->level == 2 || Auth::user()->level == 10)
+                            <td>
+                                <div class="d-flex flex-row justify-content-flex-start">
+                                    
+                                    <a href="{{ route('editEquipments', [$equipments[$index]->id]) }}">
+                                        <button class="btn btn-success m-1">Edit</button>
+                                    </a>
+                                    
+                                    @if (Auth::user()->level == 1 || Auth::user()->level == 10)
+                                        <form method='post' action="{{ route('deleteEquipments', [$equipments[$index]->id]) }}">
+                                            <button class="btn btn-danger m-1" onclick="deleteConfirm(event)">Delete
+                                                @method('delete')
+                                                @csrf
+                                            </button>
+                                        </form>
+                                    @endif
+                                    
+                                    
+                                </div>
+                        
+                            </td>
+                        @endif
                     </tr>
                 @endforeach   
                 

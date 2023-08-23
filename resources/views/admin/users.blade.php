@@ -2,21 +2,22 @@
 
 @section('content')
 <div class="d-flex justify-content-around flex-column align-items-center mb-3  mt-3 ">
-    <div class="titlebar">
+    <div class="d-flex flex-row justify-content-around w-100 align-items-center">
         <h1>Users</h1>
+        <form method="GET" action="{{ route('usersList') }}" accept-charset="UTF-8" role="searchUser" class="d-flex justify-content-center">
+            <div class="input-group w-100 p-3 ">
+                <div class="form-outline">
+                    <input id="search-input" type="search" name="searchUser"  class="form-control" value="{{ request('searchUser') }}" />
+                    <label class="form-label" for="search-input">Search</label>
+                </div>
+                <button id="search-button" class="btn btn-primary searchUser-select" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
         
     </div>
-    <form method="GET" action="{{ route('usersList') }}" accept-charset="UTF-8" role="searchUser" class="d-flex justify-content-center">
-        <div class="input-group w-100 p-3 ">
-            <div class="form-outline">
-                <input id="search-input" type="search" name="searchUser" name="searchUser" class="form-control" value="{{ request('searchUser') }}" />
-                <label class="form-label" for="search-input">Search</label>
-            </div>
-            <button id="search-button" class="btn btn-primary searchUser-select" type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-        </div>
-    </form>
+    
     <div class="d-flex justify-content-center w-75">
         <table class="table">
             <thead class="bg-primary">

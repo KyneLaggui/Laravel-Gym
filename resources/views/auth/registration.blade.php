@@ -24,7 +24,24 @@
                                     <input type="text" name="name" id="form3Example1c" class="form-control" />
                                     <label class="form-label" for="form3Example1c">Your Name</label>
                                     @if ($errors-> has('name'))
-                                        <span class="text-danger">{{ $errors->first('name') }}</span>
+                                        <script type="text/javascript">
+                                            const Toast = Swal.mixin({
+                                                toast: true,
+                                                position: 'top-end',
+                                                showConfirmButton: false,
+                                                timer: 3000,
+                                                timerProgressBar: true,
+                                                didOpen: (toast) => {
+                                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                                }
+                                                })
+                                        
+                                                Toast.fire({
+                                                icon: 'error',
+                                                title: '{{ $errors->first('name') }}'
+                                            })
+                                        </script>
                                     @endif
                                 </div>
                             </div>
@@ -36,8 +53,26 @@
                                 <div class="form-outline flex-fill mb-0">
                                     <input type="email" name="email" id="form3Example3c" class="form-control" />
                                     <label class="form-label" for="form3Example3c">Your Email</label>
-                                    @if ($errors-> has('password'))
-                                        <span class="text-danger">{{ $errors->first('password') }}</span>
+                                    @if ($errors-> has('email'))
+                                    <script type="text/javascript">
+                                        const Toast = Swal.mixin({
+                                            toast: true,
+                                            position: 'top-end',
+                                            showConfirmButton: false,
+                                            timer: 3000,
+                                            timerProgressBar: true,
+                                            didOpen: (toast) => {
+                                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                            }
+                                            })
+                                    
+                                            Toast.fire({
+                                            icon: 'error',
+                                            title: '{{ $errors->first('email') }}'
+                                        })
+                                    </script>
+                                        
                                     @endif
                                 </div>
                             </div>
@@ -50,7 +85,24 @@
                                     <input type="password" name="password" id="form3Example4c" class="form-control" />
                                     <label class="form-label" for="form3Example4c">Password</label>
                                     @if ($errors-> has('password'))
-                                        <span class="text-danger">{{ $errors->first('password') }}</span>
+                                        <script type="text/javascript">
+                                            const Toast = Swal.mixin({
+                                                toast: true,
+                                                position: 'top-end',
+                                                showConfirmButton: false,
+                                                timer: 3000,
+                                                timerProgressBar: true,
+                                                didOpen: (toast) => {
+                                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                                }
+                                                })
+                                        
+                                                Toast.fire({
+                                                icon: 'error',
+                                                title: '{{ $errors->first('password') }}'
+                                            })
+                                        </script>
                                     @endif
                                 </div>
                             </div>

@@ -17,24 +17,60 @@
                             <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                             <p class="text-black-50 mb-5">Please enter your login and password!</p>
                             @if (Session::has("success"))
-                                <div class="alert alert-success">{{ (Session::get('success')) }}</div>
+                                
+                                <script type="text/javascript">
+                                    const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                        })
+                                
+                                        Toast.fire({
+                                        icon: 'success',
+                                        title: '{{ Session::get('success')->first() }}'
+                                    })
+                                </script>
+                                
                             @elseif (Session::has("errors"))
-                                <div class="alert alert-danger">{{ Session::get('errors')->first() }}</div>
+                                <script type="text/javascript">
+                                    const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                        })
+                                
+                                        Toast.fire({
+                                        icon: 'error',
+                                        title: '{{ Session::get('errors')->first() }}'
+                                    })
+                                </script>
                             @endif
                             <div class="form-outline mb-4">
                                 <input type="email" id="typeEmailX" class="form-control form-control-lg border-black" name="email" />
                                 <label class="form-label" for="typeEmailX">Email</label>
-                                @if ($errors-> has('email'))
+                                {{-- @if ($errors-> has('email'))
                                     <span class="text-danger">{{ $errors->first('email') }}</span>
-                                @endif
+                                @endif --}}
                             </div>
             
                             <div class="form-outline mb-4">
                                 <input type="password" id="typePasswordX" class="form-control form-control-lg border-black" name="password"/>
                                 <label class="form-label" for="typePasswordX" >Password</label>
-                                @if ($errors-> has('password'))
+                                {{-- @if ($errors-> has('password'))
                                     <span class="text-danger">{{ $errors->first('password') }}</span>
-                                @endif
+                                @endif --}}
                             </div>
             
                             <p class="small mb-5 pb-lg-2"><a class="text-black-50" href="#!">Forgot password?</a></p>
