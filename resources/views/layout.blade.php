@@ -10,6 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet">
     
     
+    
 
 </head>
 <body>
@@ -42,14 +43,18 @@
                 </li>
             @else
                 @if (Auth::check() && Auth::user()->level === 10)
-                
-                <a class="nav-link">Hello, {{ auth()->user()->name}}</a>
-                
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('usersList') }}">Users</a>
                 </li>
-                
+
                 @endif
+                <a class="nav-link">Hello, {{ auth()->user()->name}}</a>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('taskSchedule') }}">Schedule</a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('logout') }}">Logout</a>
                 </li>

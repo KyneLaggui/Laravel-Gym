@@ -31,41 +31,66 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($users as $index => $user)
+                @if(count($users) === 0)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->level }}</td>
-                        <td>
-                            <div class="d-flex flex-row justify-content-flex-start">
-                                <form method="post" action="{{ route('updateUserLevel', ['id' => $user->id]) }}">
-                                    @csrf
-                                    @method('patch')
-                                    <input type="hidden" name="level" value="">
-                                    <button class="btn btn-success m-1" onclick="editUser(event)">Edit</button>
-                                        
-                                    
-                                    
-                                    {{-- <select name="level">
-                                        <option value="1" {{ $user->level == 1 ? 'selected' : '' }}>1</option>
-                                        <option value="2" {{ $user->level == 2 ? 'selected' : '' }}>2</option>
-                                        <option value="3" {{ $user->level == 3 ? 'selected' : '' }}>3</option>
-                                    </select>
-                                    <button type="submit">Update</button> --}}
-                                </form>
-                                <form method='post' action="{{ route('deleteUser', [$users[$index]->id]) }}">
-                                    <button class="btn btn-danger m-1" onclick="deleteConfirm(event)">Delete
-                                        @method('delete')
-                                        @csrf
-                                    </button>
-                                </form>
-                            </div>
+                        <td colspan="5">
+                            <script type="text/javascript">
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                })
+
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: 'No User Found'
+                                })
+                            </script>
                         </td>
-                        <!-- Add more columns as needed -->
-                        
                     </tr>
-                @endforeach
+                @else
+                    @foreach ($users as $index => $user)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ $user->level }}</td>
+                            <td>
+                                <div class="d-flex flex-row justify-content-flex-start">
+                                    <form method="post" action="{{ route('updateUserLevel', ['id' => $user->id]) }}">
+                                        @csrf
+                                        @method('patch')
+                                        <input type="hidden" name="level" value="">
+                                        <button class="btn btn-success m-1" onclick="editUser(event)">Edit</button>
+                                            
+                                        
+                                        
+                                        {{-- <select name="level">
+                                            <option value="1" {{ $user->level == 1 ? 'selected' : '' }}>1</option>
+                                            <option value="2" {{ $user->level == 2 ? 'selected' : '' }}>2</option>
+                                            <option value="3" {{ $user->level == 3 ? 'selected' : '' }}>3</option>
+                                        </select>
+                                        <button type="submit">Update</button> --}}
+                                    </form>
+                                    <form method='post' action="{{ route('deleteUser', [$users[$index]->id]) }}">
+                                        <button class="btn btn-danger m-1" onclick="deleteConfirm(event)">Delete
+                                            @method('delete')
+                                            @csrf
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                            
+                            
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
     </div>

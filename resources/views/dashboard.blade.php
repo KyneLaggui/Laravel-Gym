@@ -123,8 +123,27 @@
                 @endforeach   
                 
             @else
-                <p>No Equipments found.</p>
+                <script type="text/javascript">
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                        })
+                
+                        Toast.fire({
+                        icon: 'error',
+                        title: 'No Equipment Found'
+                    })
+                </script>
+                
             @endif
+           
         
         </tbody>
     </table>

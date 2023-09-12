@@ -30,6 +30,8 @@ Route::post('post-products', [AuthController::class, 'storeProduct'])-> name('st
 Route::get('dashboard', [AuthController::class, 'dashboard'])-> name('dashboard');
 Route::get('logout', [AuthController::class, 'logout'])-> name('logout');
 Route::get('createProduct', [AuthController::class, 'createProduct'])-> name('createProduct');
+Route::get('/taskSchedule', [AuthController::class, 'taskSchedule'])-> name('taskSchedule');
+Route::post('/taskSchedule/action', [AuthController::class, 'receiveSchedule']);
 Route::get('/equipments/edit/{id}', [AuthController::class, 'edit'])->name('editEquipments');
 Route::get('put-equipments/{id}', [AuthController::class, 'update'])->name('updateEquipments.put');
 Route::delete('delete-equipments/{id}', [AuthController::class, 'delete'])->name('deleteEquipments');

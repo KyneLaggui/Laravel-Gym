@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Session;
 use App\Models\gymEquipments;
+use App\Models\Event;
 
 
 class AuthController extends Controller
@@ -186,11 +187,57 @@ class AuthController extends Controller
 
         return redirect()->route('usersList')->with('success', 'User level updated successfully.');
     }
+    
     public function deleteUser($id)
     {
         $equipments = User::findOrFail($id);
         $equipments->delete();
         return redirect()->route('dashboard')->with('success', 'Equipments has been Deleted');
 
+    }
+
+        public function taskSchedule(Request $request)
+        {
+            if($request->ajax())
+            {
+                $data = Event::whereDate('start', '>=', $request->start)
+                        ->whereDate('end',   '<=', $request->end)
+                        ->get(['id', 'title', 'start', 'end']);
+                return response()->json($data);
+            }
+            return view('taskSchedule');
+        }
+
+    public function receiveSchedule(Request $request)
+    {
+        if($request->ajax())
+        {
+            if($request->type === 'add')
+            {
+                $calendar = Event::create([
+                    'title' => $request->title,
+                    'start' => $request->start,
+                    'end' => $request->end
+                ]);
+                return response()->json($calendar);
+            }
+            if($request->type == 'update')
+    		{
+    			$event = Event::find($request->id)->update([
+    				'title'		=>	$request->title,
+    				'start'		=>	$request->start,
+    				'end'		=>	$request->end
+    			]);
+
+    			return response()->json($event);
+    		}
+
+    		if($request->type == 'delete')
+    		{
+    			$event = Event::find($request->id)->delete();
+
+    			return response()->json($event);
+    		}
+        }
     }
 }
