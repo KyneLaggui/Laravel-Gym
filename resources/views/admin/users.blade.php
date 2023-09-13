@@ -154,8 +154,8 @@
         });
 
         if (level) {
-            // You can submit the form with the selected level value
-            form.level.value = level; // Assuming your select input's name is "level"
+            
+            form.level.value = level; 
             form.submit();
         }
     }

@@ -8,6 +8,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet">
+
+    {{-- Tailwind CSS --}}
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     
     
     
@@ -47,12 +50,16 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('usersList') }}">Users</a>
                 </li>
+            
 
                 @endif
                 <a class="nav-link">Hello, {{ auth()->user()->name}}</a>
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('taskSchedule') }}">Schedule</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('calorieTracker') }}">Calorie Tracker</a>
                 </li>
 
                 <li class="nav-item">

@@ -196,17 +196,17 @@ class AuthController extends Controller
 
     }
 
-        public function taskSchedule(Request $request)
+    public function taskSchedule(Request $request)
+    {
+        if($request->ajax())
         {
-            if($request->ajax())
-            {
-                $data = Event::whereDate('start', '>=', $request->start)
-                        ->whereDate('end',   '<=', $request->end)
-                        ->get(['id', 'title', 'start', 'end']);
-                return response()->json($data);
-            }
-            return view('taskSchedule');
+            $data = Event::whereDate('start', '>=', $request->start)
+                    ->whereDate('end',   '<=', $request->end)
+                    ->get(['id', 'title', 'start', 'end']);
+            return response()->json($data);
         }
+        return view('taskSchedule');
+    }
 
     public function receiveSchedule(Request $request)
     {
@@ -240,4 +240,5 @@ class AuthController extends Controller
     		}
         }
     }
+    
 }

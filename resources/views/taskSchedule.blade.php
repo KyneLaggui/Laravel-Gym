@@ -2,7 +2,7 @@
 @section('content')
 <html>
 <head>
-    <title>How to Use Fullcalendar in Laravel 8</title>
+   
     
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
@@ -16,12 +16,14 @@
   
 <div class="container">
     <br />
-    <h1 class="text-center text-primary"><u>How to Use Fullcalendar in Laravel 8</u></h1>
+    <h1 class="text-center text-primary"><u>Schedule Maker</u></h1>
     <br />
 
     <div id="calendar"></div>
 
 </div>
+
+
    
 <script>
 
@@ -32,6 +34,7 @@ $(document).ready(function () {
             'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
         }
     });
+    
 
     var calendar = $('#calendar').fullCalendar({
         editable:true,
@@ -45,7 +48,8 @@ $(document).ready(function () {
         selectHelper: true,
         select:function(start, end, allDay)
         {
-            var title = prompt('Create Schedule');
+            var title = prompt('Try') ;
+
 
             if(title)
             {
