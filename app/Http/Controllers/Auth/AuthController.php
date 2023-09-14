@@ -198,11 +198,12 @@ class AuthController extends Controller
 
     public function taskSchedule(Request $request)
     {
-        if($request->ajax())
-        {
-            $data = Event::whereDate('start', '>=', $request->start)
-                    ->whereDate('end',   '<=', $request->end)
-                    ->get(['id', 'title', 'start', 'end']);
+        if ($request->ajax()) {
+            $user_id = auth()->user()->id;
+            $data = Event::where('user_id', $user_id)
+                ->whereDate('start', '>=', $request->start)
+                ->whereDate('end', '<=', $request->end)
+                ->get(['id', 'title', 'start', 'end']);
             return response()->json($data);
         }
         return view('taskSchedule');
@@ -210,35 +211,44 @@ class AuthController extends Controller
 
     public function receiveSchedule(Request $request)
     {
-        if($request->ajax())
-        {
-            if($request->type === 'add')
-            {
+        if ($request->ajax()) {
+            $user = auth()->user();
+    
+            if ($request->type === 'add') {
                 $calendar = Event::create([
                     'title' => $request->title,
                     'start' => $request->start,
-                    'end' => $request->end
+                    'end' => $request->end,
+                    'user_id' => $user->id, // Associate the event with the current user
                 ]);
                 return response()->json($calendar);
+            } elseif ($request->type === 'update') {
+                $event = Event::find($request->id);
+    
+                // Check if the event belongs to the currently authenticated user
+                if ($event->user_id === $user->id) {
+                    $event->update([
+                        'title' => $request->title,
+                        'start' => $request->start,
+                        'end' => $request->end,
+                    ]);
+                    return response()->json($event);
+                } else {
+                    return response()->json(['error' => 'Unauthorized'], 403);
+                }
+            } elseif ($request->type === 'delete') {
+                $event = Event::find($request->id);
+    
+                // Check if the event belongs to the currently authenticated user
+                if ($event->user_id === $user->id) {
+                    $event->delete();
+                    return response()->json($event);
+                } else {
+                    return response()->json(['error' => 'Unauthorized'], 403);
+                }
             }
-            if($request->type == 'update')
-    		{
-    			$event = Event::find($request->id)->update([
-    				'title'		=>	$request->title,
-    				'start'		=>	$request->start,
-    				'end'		=>	$request->end
-    			]);
-
-    			return response()->json($event);
-    		}
-
-    		if($request->type == 'delete')
-    		{
-    			$event = Event::find($request->id)->delete();
-
-    			return response()->json($event);
-    		}
         }
     }
+    
     
 }

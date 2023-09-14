@@ -34,8 +34,10 @@ Route::get('createProduct', [AuthController::class, 'createProduct'])-> name('cr
 Route::get('/taskSchedule', [AuthController::class, 'taskSchedule'])-> name('taskSchedule');
 Route::post('/taskSchedule/action', [AuthController::class, 'receiveSchedule']);
 Route::get('/calorieTracker', [TrackerController::class, 'calorieTracker'])-> name('calorieTracker');
-Route::post('/calorieTracker', [TrackerController::class, 'storeTracker'])-> name('storeTracker');
+Route::post('/storeTracker', [TrackerController::class, 'storeTracker'])-> name('storeTracker');
+Route::post('/calorieTracker', [TrackerController::class, 'storeMeal'])->name('storeMeal');
 Route::delete('/{tracker}', [TrackerController::class, 'deleteTracker'])-> name('deleteTracker');
+
 Route::get('/equipments/edit/{id}', [AuthController::class, 'edit'])->name('editEquipments');
 Route::get('put-equipments/{id}', [AuthController::class, 'update'])->name('updateEquipments.put');
 Route::delete('delete-equipments/{id}', [AuthController::class, 'delete'])->name('deleteEquipments');
