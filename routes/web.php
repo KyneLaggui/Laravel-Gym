@@ -37,6 +37,7 @@ Route::get('/calorieTracker', [TrackerController::class, 'calorieTracker'])-> na
 Route::post('/storeTracker', [TrackerController::class, 'storeTracker'])-> name('storeTracker');
 Route::post('/calorieTracker', [TrackerController::class, 'storeMeal'])->name('storeMeal');
 Route::delete('/{tracker}', [TrackerController::class, 'deleteTracker'])-> name('deleteTracker');
+Route::delete('/deleteMeal/{id}', [TrackerController::class, 'deleteMeal'])-> name('deleteMeal');
 
 Route::get('/equipments/edit/{id}', [AuthController::class, 'edit'])->name('editEquipments');
 Route::get('put-equipments/{id}', [AuthController::class, 'update'])->name('updateEquipments.put');

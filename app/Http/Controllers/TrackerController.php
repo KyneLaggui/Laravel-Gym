@@ -30,15 +30,13 @@ class TrackerController extends Controller
         ]);
 
         Meal::create($meals);
-        return redirect('/calorieTracker');
+        return redirect()->route('calorieTracker')->with('success', 'Meal has been Added');
     }
 
 
     public function calorieTracker(Request $request)
     {
-        
-        // Retrieve all trackers
-        
+
         $date = $request->input('date', now()->format('Y-m-d'));
 
         $trackers = Tracker::where([
@@ -54,6 +52,38 @@ class TrackerController extends Controller
 
         $overallCalories = $breakfastCalories + $lunchCalories + $dinnerCalories;
 
+        $totalCarbohydrates = 0;
+        $totalProtein = 0;
+        $totalFats = 0;
+
+        $totalCaloriesConsumed = $overallCalories;
+
+        
+        $calorieGoal = '1700';
+        $calorieDifference = $calorieGoal - $overallCalories;
+
+       
+        
+
+        foreach ($trackers as $tracker) {
+            $totalCarbohydrates += $tracker->carbohydrates;
+            $totalProtein += $tracker->protein;
+            $totalFats += $tracker->fats;
+        }
+
+        
+        $previousDate = date('Y-m-d', strtotime($date . ' -1 day'));
+        $nextDate = date('Y-m-d', strtotime($date . ' +1 day'));
+
+        $keyword = $request->get('search');
+
+        if (!empty($keyword)) {
+            $mealSearch = Meal::where('title', 'LIKE', "%$keyword%")
+                ->latest()
+                ->get();
+        } else {
+            $mealSearch = Meal::latest()->get();
+        }
 
         return view('calorieTracker', [
             'trackers' => $trackers,
@@ -62,7 +92,15 @@ class TrackerController extends Controller
             'lunchCalories' => $lunchCalories,
             'dinnerCalories' => $dinnerCalories,
             'overallCalories' => $overallCalories,
-            'selectedDate' => $date
+            'selectedDate' => $date,
+            'previousDate' => $previousDate,
+            'nextDate' => $nextDate,
+            'totalCarbohydrates' => $totalCarbohydrates,
+            'totalProtein' => $totalProtein,
+            'totalFats' => $totalFats,
+            'mealSearch' => $mealSearch,
+            'calorieGoal' => $calorieGoal,
+            'calorieDifference' => $calorieDifference
         ]);
     }
 
@@ -84,13 +122,22 @@ class TrackerController extends Controller
 
         Tracker::create($attributes);
 
-        Event::create([
-            'user_id' => auth()->user()->id,
-            'start' => $attributes['date'],
-            'end' => $attributes['date'],
-            'title' => 'Calorie Tracker',
-        ]);
+        $existingEvent = Event::where('user_id', $attributes['user_id'])
+        ->where('start', $attributes['date'])
+        ->where('end', $attributes['date'])
+        ->where('title', 'Calorie Tracker')
+        ->first();
 
+        if (!$existingEvent) {
+            // Create a new event only if it doesn't exist
+            Event::create([
+                'user_id' => auth()->user()->id,
+                'start' => $attributes['date'],
+                'end' => $attributes['date'],
+                'title' => 'Calorie Tracker',
+            ]);
+        }
+        
         $caloriesPageUrl = '/calorieTracker?date=' . $attributes['date'];
 
         return redirect($caloriesPageUrl);
@@ -99,14 +146,26 @@ class TrackerController extends Controller
     public function deleteTracker(Tracker $tracker, Request $request)
     {
         if (auth()->user()->id === $tracker->user_id) {
+            $date = $tracker->date; 
             $tracker->delete();
+
+            $caloriesPageUrl = '/calorieTracker?date=' . $date;
+
+            return redirect($caloriesPageUrl);
         }
 
-        $caloriesPageUrl = '/calorieTracker?date=' . $attributes['date'];
+    }
 
-        return redirect($caloriesPageUrl);
+    public function deleteMeal(Tracker $tracker, $id)
+    {
+        $date = $tracker->date; 
+       
+        Meal::destroy($id);
+
+        $caloriesPageUrl = '/calorieTracker?date=' . $date;
 
         
+        return redirect($caloriesPageUrl)->with('success', 'Tracker deleted successfully');
     }
 
     public function getTotalCalories($category, $trackers) {

@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
+   
 </head>
 <body>
 
 <div class="container">
     <br />
-    <h1 class="text-center text-primary"><u>Schedule Maker</u></h1>
+    <h1 class="text-center text-primary text-5xl">Schedule Maker</h1>
     <br />
 
     <div id="calendar"></div>
@@ -24,24 +25,24 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="eventModalLabel">Create Event</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <h5 class="modal-title" id="eventModalLabel">Create Schedule</h5>
+          <button type="button" class="btn btn-primary float-end" id="calorieTrackerButton">Calorie Tracker</button>
+          
         </div>
         <div class="modal-body">
-          <input type="text" id="eventTitle" class="form-control" placeholder="Event Title">
+          <input type="text" id="eventTitle" class="form-control mb-3" placeholder="Create Schedule">
+          
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
           <button type="button" class="btn btn-primary" id="createEvent">Create</button>
         </div>
       </div>
     </div>
-  </div>
+</div>
 
 <style>
-    /* Custom CSS for the "Calorie Tracker" button */
+    
     .custom-button {
         background-color: #007bff;
         color: white;
@@ -49,18 +50,28 @@
         border-radius: 3px;
         padding: 5px 10px;
         cursor: pointer;
-        margin-right: 10px; /* Adjust the spacing as needed */
+        margin-right: 10px; 
     }
-    .calorie-event {
-        background-color: red !important; /* Change the background color to red or any color you prefer */
-        color: white; /* Change the text color to make it readable */
-        border-radius: 3px; /* Add rounded corners if desired */
+    .fc-content, .fc-state-active {
+        background-color: #007bff;
+        color: white;
     }
+    .swal2-cancel {
+        margin-right: 1em !important;
+    }
+    
+    
     
     
 </style>
 
 <script>
+
+    function closeModal()
+    {
+        $('#eventModal').modal('hide');
+    }
+
     $(document).ready(function () {
         $.ajaxSetup({
             headers: {
@@ -79,33 +90,84 @@
             events: '/taskSchedule',
             selectable: true,
             selectHelper: true,
-            select: function (start, end, allDay) {
-                var title = prompt('Try');
-
+            select: function (date, jsEvent, view) {
+                var selectedDate = date.format('YYYY-MM-DD HH:mm:ss');
                 
 
-                if (title) {
-                    var start = $.fullCalendar.formatDate(start, 'Y-MM-DD HH:mm:ss');
-                    var end = $.fullCalendar.formatDate(end, 'Y-MM-DD HH:mm:ss');
+                $('#eventModal').modal('show');
+                
+                $('#createEvent').off('click').on('click', function () {
+                    var title = $('#eventTitle').val();
+                    if (title) {
 
-                    $.ajax({
-                        url: "/taskSchedule/action",
-                        type: "POST",
-                        data: {
-                            title: title,
-                            start: start,
-                            end: end,
-                            type: 'add'
-                        },
-                        success: function (data) {
-                            calendar.fullCalendar('refetchEvents');
-                            alert("Event Created Successfully");
-                        },
-                        error: function (xhr, status, error) {
-                            console.error(xhr.responseText);
-                        }
-                    })
-                }
+                        var start = selectedDate;
+                        var end = selectedDate; 
+
+                        $.ajax({
+                            url: "/taskSchedule/action",
+                            type: "POST",
+                            data: {
+                                title: title,
+                                start: start,
+                                end: end,
+                                type: 'add'
+                            },
+                            success: function (data) {
+                                calendar.fullCalendar('refetchEvents');
+                                
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                    })
+                            
+                                    Toast.fire({
+                                    icon: 'success',
+                                    title: 'Schedule Added'
+                                })
+               
+                                closeModal(); 
+                                $('#eventTitle').val(''); 
+                            },
+                            error: function (xhr, status, error) {
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                    })
+                            
+                                    Toast.fire({
+                                    icon: 'error',
+                                    title: 'Error'
+                                })
+                            }
+                        });
+
+                    }
+                });
+
+                $('#calorieTrackerButton').click(function () {
+                    
+                    var formattedDate = moment(selectedDate).format('YYYY-MM-DD');
+                    var caloriesPageUrl = '/calorieTracker?date=' + formattedDate;
+                    window.location.href = caloriesPageUrl;
+                    
+                    $('#eventModal').modal('hide');
+                });
+
+               
             },
             eventResize: function (event, delta) {
                 var start = $.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm:ss');
@@ -125,7 +187,22 @@
                     },
                     success: function (response) {
                         calendar.fullCalendar('refetchEvents');
-                        alert("Event Updated Successfully");
+                        const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                    })
+                            
+                                    Toast.fire({
+                                    icon: 'success',
+                                    title: 'Schedule Updated'
+                                })
                     }
                 })
             },
@@ -147,49 +224,83 @@
                     },
                     success: function (response) {
                         calendar.fullCalendar('refetchEvents');
-                        alert("Event Updated Successfully");
+                        calendar.fullCalendar('refetchEvents');
+                        const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                    })
+                            
+                                    Toast.fire({
+                                    icon: 'success',
+                                    title: 'Schedule Updated'
+                                })
                     }
                 })
             },
             eventClick: function (event) {
-                if (confirm("Are you sure you want to remove it?")) {
-                    var id = event.id;
-                    $.ajax({
-                        url: "/taskSchedule/action",
-                        type: "POST",
-                        data: {
-                            id: id,
-                            type: "delete"
-                        },
-                        success: function (response) {
-                            calendar.fullCalendar('refetchEvents');
-                            alert("Event Deleted Successfully");
-                        }
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
                     })
-                }
+
+                    swalWithBootstrapButtons.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        var id = event.id;
+                        $.ajax({
+                            url: "/taskSchedule/action",
+                            type: "POST",
+                            data: {
+                                id: id,
+                                type: "delete"
+                            },
+                            success: function (response) {
+                                calendar.fullCalendar('refetchEvents');
+                                
+                            }
+                        })
+                        swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'Your Schedule has been deleted.',
+                        'success'
+                        )
+                    } else if (
+                        /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'Your Schedules are safe',
+                        'error'
+                        )
+                    }
+                })
+                
             }
         });
 
-        // Create the "Calorie Tracker" button
-        var calorieTrackerButton = $('<button>', {
-        text: 'Calorie Tracker',
-        class: 'custom-button',
-        click: function () {
-            
-            var selectedDate = calendar.fullCalendar('getDate'); 
+        
 
-            var formattedDate = selectedDate.format('YYYY-MM-DD');
-
-            var caloriesPageUrl = '/calorieTracker?date=' + formattedDate;
-
-            window.location.href = caloriesPageUrl;
-            
-        }
-    });
 
         
-        var header = calendar.find('.fc-toolbar');
-        header.find('.fc-center').append(calorieTrackerButton);
+        
     });
 </script>
 </body>

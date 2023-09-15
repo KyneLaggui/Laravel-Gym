@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaydee Power</title>
+    <title>myKaydeePal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css" rel="stylesheet">
 
     {{-- Tailwind CSS --}}
@@ -14,15 +17,21 @@
     
     
     
+    <style>
+        *{
+            font-family: 'Instrument Sans', sans-serif;
+        }
+    </style>
 
 </head>
 <body>
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
     <!-- Navbar -->
+    
     <nav class="navbar navbar-expand-lg navbar-light bg-white ">
         <div class="container-fluid">
             <span class="navbar-brand" >
-                <a class="nav-link" href="{{ url('dashboard') }}">Kaydev</a>
+                <a class="nav-link" href="{{ url('dashboard') }}">myKaydeePal</a>
             </span>
         <button
             class="navbar-toggler"
@@ -58,10 +67,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('taskSchedule') }}">Schedule</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('calorieTracker') }}">Calorie Tracker</a>
-                </li>
-
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('logout') }}">Logout</a>
                 </li>
