@@ -4,7 +4,7 @@
 <div class="bg-gray-200 p-4 min-h-screen"">
         <div class="lg:w-2/4 mx-auto py-8 px-6 bg-white rounded-xl">
             <h1 class="font-bold text-5xl text-center mb-8">Calorie Tracker</h1>
-            
+            <p class="text-gray-500"> {{ $selectedDate }}</p>
             <div class="mb-6">
                 <ul class="flex">
                     <li class="mr-4">
@@ -27,11 +27,7 @@
                         <input type="number" name="protein" placeholder="Protein" class="py-3 px-4 bg-gray-100 rounded-xl" >
                         
                         </input>
-                        {{-- <select class="browser-default custom-select w-100 p-1 " name="timeline">
-                            @foreach(json_decode('{"Breakfast":"Breakfast", "Lunch":"Lunch", "Dinner": "Dinner"}', true) as $optionKey => $optionValue)
-                                    <option value="{{ $optionKey }}" >{{ $optionValue}}</option>
-                            @endforeach
-                        </select> --}}
+                        
                         <button class="w-28 py-2 px-8 bg-green-500 text-white rounded-xl">Add</button>
                     </form>
                 </div>
@@ -47,17 +43,20 @@
                             <p class="text-gray-500">Carbohydrates: {{ $meal->carbohydrates }}</p>
                             <p class="text-gray-500">Fats: {{ $meal->fats }}</p>
                             <p class="text-gray-500">Protein: {{ $meal->protein }}</p>
+                            
 
                         </div>
                         <div class="flex space-x-3">
-                            <form id="store-tracker-form" method="POST" action="/storeTracker" >
+                            <form id="store-tracker-form" method="POST" action="storeTracker" >
                                 @csrf
                                 <input type="hidden" name="title" placeholder="Calories" value=" {{ $meal->title }} ">
                                 <input type="hidden" name="calories" placeholder="Calories" value=" {{ $meal->calories }} ">
                                 <input type="hidden" name="carbohydrates" placeholder="Carbohydrates" value=" {{ $meal->carbohydrates }} ">
                                 <input type="hidden" name="fats" placeholder="Fats" value=" {{ $meal->fats }} ">
-                                <input type="hidden" name="protein" placeholder="Protein" value=" {{ $meal->protein}} ">
+                                <input type="hidden" name="protein" placeholder="Protein" value=" {{ $meal->protein }} ">
+                                <input type="hidden" name="date" value=" {{ $selectedDate }} ">
                                 <input type="hidden" name="timeline" id="meal-time-input">
+                                
                                 <button class="py-2 px-2 bg-green-500 text-white rounded-xl" onclick="addMeals(event, this.form)">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

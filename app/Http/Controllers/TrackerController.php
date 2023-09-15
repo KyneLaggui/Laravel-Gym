@@ -6,6 +6,7 @@ use App\Models\Tracker;
 use App\Models\Meal;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Event;
 
 class TrackerController extends Controller
 {   
@@ -33,16 +34,17 @@ class TrackerController extends Controller
     }
 
 
-    public function calorieTracker()
+    public function calorieTracker(Request $request)
     {
         
         // Retrieve all trackers
-        $allTrackers = Tracker::all();
+        
+        $date = $request->input('date', now()->format('Y-m-d'));
 
-        // Filter trackers to show only those belonging to the authenticated user
-        $trackers = $allTrackers->filter(function ($tracker) {
-            return auth()->check() && auth()->user()->id === $tracker->user_id;
-        });
+        $trackers = Tracker::where([
+            ['user_id', auth()->id()],
+            ['date', $date],
+        ])->get();
 
         $meals = Meal::all();
 
@@ -59,11 +61,12 @@ class TrackerController extends Controller
             'breakfastCalories' => $breakfastCalories,
             'lunchCalories' => $lunchCalories,
             'dinnerCalories' => $dinnerCalories,
-            'overallCalories' => $overallCalories
+            'overallCalories' => $overallCalories,
+            'selectedDate' => $date
         ]);
     }
 
-    public function storeTracker()
+    public function storeTracker(Request $request)
     {
         $attributes = request()->validate ([
             "title" => 'required',
@@ -71,21 +74,39 @@ class TrackerController extends Controller
             'calories' => 'required',
             'carbohydrates' => 'required',
             'fats' => 'required',
-            'protein' => 'required'
+            'protein' => 'required',
+            'date' => 'required'
         ]);
 
         $attributes['user_id'] = auth()->user()->id;
+
+       
+
         Tracker::create($attributes);
-        return redirect('/calorieTracker');
+
+        Event::create([
+            'user_id' => auth()->user()->id,
+            'start' => $attributes['date'],
+            'end' => $attributes['date'],
+            'title' => 'Calorie Tracker',
+        ]);
+
+        $caloriesPageUrl = '/calorieTracker?date=' . $attributes['date'];
+
+        return redirect($caloriesPageUrl);
     }
 
-    public function deleteTracker(Tracker $tracker)
+    public function deleteTracker(Tracker $tracker, Request $request)
     {
         if (auth()->user()->id === $tracker->user_id) {
             $tracker->delete();
         }
+
+        $caloriesPageUrl = '/calorieTracker?date=' . $attributes['date'];
+
+        return redirect($caloriesPageUrl);
+
         
-        return redirect('/calorieTracker');
     }
 
     public function getTotalCalories($category, $trackers) {

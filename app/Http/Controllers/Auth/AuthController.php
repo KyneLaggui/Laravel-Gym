@@ -9,6 +9,7 @@ use App\Models\User;
 use Session;
 use App\Models\gymEquipments;
 use App\Models\Event;
+use App\Models\Tracker;
 
 
 class AuthController extends Controller
@@ -124,9 +125,6 @@ class AuthController extends Controller
             'name' => 'required'
         ]);
 
-    
-
-
         $equipmentsEdit = gymEquipments::find($request->hidden_id);
 
         $equipmentsEdit->name = $request->name;
@@ -219,13 +217,13 @@ class AuthController extends Controller
                     'title' => $request->title,
                     'start' => $request->start,
                     'end' => $request->end,
-                    'user_id' => $user->id, // Associate the event with the current user
+                    'user_id' => $user->id, 
                 ]);
                 return response()->json($calendar);
             } elseif ($request->type === 'update') {
                 $event = Event::find($request->id);
     
-                // Check if the event belongs to the currently authenticated user
+                
                 if ($event->user_id === $user->id) {
                     $event->update([
                         'title' => $request->title,
@@ -238,10 +236,16 @@ class AuthController extends Controller
                 }
             } elseif ($request->type === 'delete') {
                 $event = Event::find($request->id);
+                
     
-                // Check if the event belongs to the currently authenticated user
+                
                 if ($event->user_id === $user->id) {
+
+                    $eventDate = date('Y-m-d', strtotime($event->start));
+
                     $event->delete();
+
+                    Tracker::where('date', $eventDate)->delete();
                     return response()->json($event);
                 } else {
                     return response()->json(['error' => 'Unauthorized'], 403);
@@ -249,6 +253,5 @@ class AuthController extends Controller
             }
         }
     }
-    
     
 }
