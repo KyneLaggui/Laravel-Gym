@@ -129,7 +129,7 @@ class TrackerController extends Controller
         ->first();
 
         if (!$existingEvent) {
-            // Create a new event only if it doesn't exist
+           
             Event::create([
                 'user_id' => auth()->user()->id,
                 'start' => $attributes['date'],
